@@ -1,0 +1,18 @@
+\contentsline {section}{\numberline {1}Notation and Preliminaries}{1}{section.1}%
+\contentsline {subsection}{\numberline {1.1}Mamba SSM Recurrence}{2}{subsection.1.1}%
+\contentsline {section}{\numberline {2}Validity as a Generative Model}{2}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Construction of the Joint Distribution}{2}{subsection.2.1}%
+\contentsline {section}{\numberline {3}Correctness of the Forward Algorithm}{3}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Forward Variable and Recursion}{3}{subsection.3.1}%
+\contentsline {section}{\numberline {4}Universal Approximation by Mamba Experts}{3}{section.4}%
+\contentsline {subsection}{\numberline {4.1}SSM as a Functional Approximator}{4}{subsection.4.1}%
+\contentsline {section}{\numberline {5}Model Identifiability}{4}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Conditions for Expert Separability}{4}{subsection.5.1}%
+\contentsline {section}{\numberline {6}Convergence of Hybrid EM-Backprop Training}{5}{section.6}%
+\contentsline {subsection}{\numberline {6.1}Objective Function}{5}{subsection.6.1}%
+\contentsline {section}{\numberline {7}Strict Expressiveness over HMM and MoE}{6}{section.7}%
+\contentsline {subsection}{\numberline {7.1}Subsumption Results}{7}{subsection.7.1}%
+\contentsline {section}{\numberline {8}MELD-Specific Theoretical Guarantees}{8}{section.8}%
+\contentsline {subsection}{\numberline {8.1}Structural Regularisation of Rare Classes}{8}{subsection.8.1}%
+\contentsline {subsection}{\numberline {8.2}Monotone Information Gain from Trimodal Fusion}{8}{subsection.8.2}%
+\contentsline {section}{\numberline {9}Main Theorem}{9}{section.9}%
