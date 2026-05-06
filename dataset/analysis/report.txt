@@ -1,0 +1,161 @@
+================================================================================
+MAMBA-MoE EXPERIMENT ANALYSIS REPORT
+================================================================================
+
+Total experiments: 253
+Failed experiments: 36
+Total models: 4
+Total text backbones: 5
+Total audio backbones: 2
+Total video backbones: 2
+d_model values: [np.int64(256), np.int64(512), np.int64(1024)]
+num_experts values: [np.int64(8), np.int64(16)]
+
+--------------------------------------------------------------------------------
+OVERALL STATISTICS
+--------------------------------------------------------------------------------
+  test_acc  mean=0.5332  std=0.0644  min=0.3330  max=0.6406
+  test_f1   mean=0.5029  std=0.0687  min=0.3127  max=0.6208
+  best_dev_f1 mean=0.4833  std=0.0663
+  best_epoch mean=8.4  std=4.7
+  elapsed mean=780.3s  std=478.9s
+
+--------------------------------------------------------------------------------
+BY MODEL (aggregated across all configs)
+--------------------------------------------------------------------------------
+
+  variant1 (MoE Mamba Experts)  n=55
+    test_f1   mean=0.5077  std=0.0655  max=0.6101
+    test_acc  mean=0.5351  std=0.0617  max=0.6241
+    best_dev_f1 mean=0.4903  std=0.0613
+
+  variant2 (Modality Specialists)  n=66
+    test_f1   mean=0.5033  std=0.0726  max=0.6096
+    test_acc  mean=0.5388  std=0.0615  max=0.6406
+    best_dev_f1 mean=0.4776  std=0.0735
+
+  variant3 (Hierarchical MoE)  n=66
+    test_f1   mean=0.5017  std=0.0698  max=0.6208
+    test_acc  mean=0.5310  std=0.0687  max=0.6387
+    best_dev_f1 mean=0.4833  std=0.0683
+
+  variant4 (Context Conditioned)  n=66
+    test_f1   mean=0.4995  std=0.0677  max=0.6032
+    test_acc  mean=0.5282  std=0.0658  max=0.6241
+    best_dev_f1 mean=0.4834  std=0.0614
+
+--------------------------------------------------------------------------------
+BY TEXT BACKBONE (aggregated across all configs)
+--------------------------------------------------------------------------------
+
+  TFE-A (RoBERTa-Base)  n=46
+    test_f1   mean=0.5455  std=0.0310  max=0.5949
+
+  TFE-B (RoBERTa-Large)  n=46
+    test_f1   mean=0.5315  std=0.0242  max=0.5738
+
+  TFE-C (DeBERTa-v3)  n=115
+    test_f1   mean=0.4466  std=0.0575  max=0.5235
+
+  TFE-D (BERT-Large)  n=23
+    test_f1   mean=0.5971  std=0.0096  max=0.6208
+
+  TFE-E (Electra-Large)  n=23
+    test_f1   mean=0.5473  std=0.0192  max=0.5721
+
+--------------------------------------------------------------------------------
+BY D_MODEL
+--------------------------------------------------------------------------------
+  d_model=256: test_f1 mean=0.5087  std=0.0671  n=88
+  d_model=512: test_f1 mean=0.5071  std=0.0682  n=88
+  d_model=1024: test_f1 mean=0.4914  std=0.0706  n=77
+
+--------------------------------------------------------------------------------
+BY NUM_EXPERTS
+--------------------------------------------------------------------------------
+  experts=8: test_f1 mean=0.5032  std=0.0669  n=132
+  experts=16: test_f1 mean=0.5025  std=0.0710  n=121
+
+--------------------------------------------------------------------------------
+TOP 10 BEST RUNS (by test_f1)
+--------------------------------------------------------------------------------
+  variant3      TFE-D_cfg1      d=256  e=16  F1=0.6208  ACC=0.6387  devF1=0.5751  epoch=6
+  variant1      TFE-D_cfg1      d=256  e=16  F1=0.6101  ACC=0.6134  devF1=0.5769  epoch=9
+  variant2      TFE-D_cfg1      d=256  e=16  F1=0.6096  ACC=0.6406  devF1=0.5769  epoch=5
+  variant2      TFE-D_cfg1      d=512  e=16  F1=0.6076  ACC=0.6192  devF1=0.5749  epoch=6
+  variant3      TFE-D_cfg1      d=512  e=8  F1=0.6049  ACC=0.6130  devF1=0.5719  epoch=6
+  variant1      TFE-D_cfg1      d=512  e=16  F1=0.6037  ACC=0.6169  devF1=0.5851  epoch=7
+  variant4      TFE-D_cfg1      d=512  e=8  F1=0.6032  ACC=0.6226  devF1=0.5772  epoch=8
+  variant4      TFE-D_cfg1      d=1024  e=16  F1=0.6031  ACC=0.6241  devF1=0.5651  epoch=8
+  variant2      TFE-D_cfg1      d=1024  e=8  F1=0.6002  ACC=0.6257  devF1=0.5475  epoch=9
+  variant2      TFE-D_cfg1      d=512  e=8  F1=0.5976  ACC=0.6180  devF1=0.5655  epoch=6
+
+--------------------------------------------------------------------------------
+BOTTOM 10 WORST RUNS (by test_f1)
+--------------------------------------------------------------------------------
+  variant2      TFE-C_cfg1      d=1024  e=8  F1=0.3127  ACC=0.4812  devF1=0.2523  epoch=1
+  variant4      TFE-C_cfg1      d=1024  e=8  F1=0.3141  ACC=0.3406  devF1=0.3016  epoch=23
+  variant2      TFE-C_cfg1      d=1024  e=16  F1=0.3142  ACC=0.4816  devF1=0.2525  epoch=4
+  variant3      TFE-C_cfg1      d=1024  e=16  F1=0.3205  ACC=0.3330  devF1=0.3014  epoch=17
+  variant4      TFE-C_cfg1      d=512  e=8  F1=0.3283  ACC=0.3559  devF1=0.3596  epoch=20
+  variant2      TFE-C_cfg3      d=1024  e=16  F1=0.3300  ACC=0.4854  devF1=0.2691  epoch=6
+  variant3      TFE-C_cfg1      d=256  e=16  F1=0.3307  ACC=0.3831  devF1=0.3319  epoch=12
+  variant4      TFE-C_cfg1      d=1024  e=16  F1=0.3339  ACC=0.3870  devF1=0.3178  epoch=16
+  variant2      TFE-C_cfg1      d=256  e=8  F1=0.3383  ACC=0.3525  devF1=0.3460  epoch=18
+  variant2      TFE-C_cfg1      d=256  e=16  F1=0.3410  ACC=0.3701  devF1=0.3443  epoch=16
+
+--------------------------------------------------------------------------------
+FAILED EXPERIMENTS
+--------------------------------------------------------------------------------
+  variant1 TFE-C_cfg1 AFE-B_cfg1 VFE-A_cfg1 d=256 e=8
+  variant1 TFE-C_cfg1 AFE-B_cfg1 VFE-A_cfg1 d=1024 e=16
+  variant1 TFE-C_cfg3 AFE-B_cfg3 VFE-A_cfg3 d=1024 e=16
+  variant1 TFE-C_cfg4 AFE-B_cfg1 VFE-A_cfg1 d=1024 e=16
+  variant1 TFE-C_cfg5 AFE-B_cfg1 VFE-A_cfg1 d=256 e=8
+  variant1 TFE-C_cfg5 AFE-B_cfg1 VFE-A_cfg1 d=256 e=16
+  variant1 TFE-C_cfg5 AFE-B_cfg1 VFE-A_cfg1 d=512 e=8
+  variant1 TFE-C_cfg5 AFE-B_cfg1 VFE-A_cfg1 d=512 e=16
+  variant1 TFE-C_cfg5 AFE-B_cfg1 VFE-A_cfg1 d=1024 e=8
+  variant1 TFE-C_cfg5 AFE-B_cfg1 VFE-A_cfg1 d=1024 e=16
+  variant2 TFE-C_cfg5 AFE-B_cfg1 VFE-A_cfg1 d=256 e=8
+  variant2 TFE-C_cfg5 AFE-B_cfg1 VFE-A_cfg1 d=256 e=16
+  variant2 TFE-C_cfg5 AFE-B_cfg1 VFE-A_cfg1 d=512 e=8
+  variant2 TFE-C_cfg5 AFE-B_cfg1 VFE-A_cfg1 d=512 e=16
+  variant2 TFE-C_cfg5 AFE-B_cfg1 VFE-A_cfg1 d=1024 e=8
+  variant2 TFE-C_cfg5 AFE-B_cfg1 VFE-A_cfg1 d=1024 e=16
+  variant3 TFE-C_cfg5 AFE-B_cfg1 VFE-A_cfg1 d=256 e=8
+  variant3 TFE-C_cfg5 AFE-B_cfg1 VFE-A_cfg1 d=256 e=16
+  variant3 TFE-C_cfg5 AFE-B_cfg1 VFE-A_cfg1 d=512 e=8
+  variant3 TFE-C_cfg5 AFE-B_cfg1 VFE-A_cfg1 d=512 e=16
+  variant3 TFE-C_cfg5 AFE-B_cfg1 VFE-A_cfg1 d=1024 e=8
+  variant3 TFE-C_cfg5 AFE-B_cfg1 VFE-A_cfg1 d=1024 e=16
+  variant4 TFE-C_cfg5 AFE-B_cfg1 VFE-A_cfg1 d=256 e=8
+  variant4 TFE-C_cfg5 AFE-B_cfg1 VFE-A_cfg1 d=256 e=16
+  variant4 TFE-C_cfg5 AFE-B_cfg1 VFE-A_cfg1 d=512 e=8
+  variant4 TFE-C_cfg5 AFE-B_cfg1 VFE-A_cfg1 d=512 e=16
+  variant4 TFE-C_cfg5 AFE-B_cfg1 VFE-A_cfg1 d=1024 e=8
+  variant4 TFE-C_cfg5 AFE-B_cfg1 VFE-A_cfg1 d=1024 e=16
+  variant1 TFE-B_cfg1 AFE-B_cfg1 VFE-A_cfg1 d=1024 e=16
+  variant1 TFE-B_cfg3 AFE-B_cfg3 VFE-A_cfg3 d=1024 e=16
+  variant1 TFE-D_cfg1 AFE-B_cfg1 VFE-A_cfg1 d=1024 e=16
+  variant1 TFE-E_cfg1 AFE-B_cfg1 VFE-A_cfg1 d=1024 e=16
+  variant1 TFE-A_cfg1 AFE-B_cfg1 VFE-A_cfg1 d=1024 e=16
+  variant1 TFE-A_cfg3 AFE-B_cfg3 VFE-A_cfg3 d=1024 e=16
+  variant1 TFE-C_cfg1 AFE-C_cfg1 VFE-A_cfg1 d=1024 e=16
+  variant1 TFE-C_cfg1 AFE-B_cfg1 VFE-B_cfg1 d=1024 e=16
+
+--------------------------------------------------------------------------------
+CROSS-MODALITY ANALYSIS (TFE-C_cfg1 with different A/V backbones)
+--------------------------------------------------------------------------------
+  AFE-B + VFE-A | variant1      F1=0.4750  n=5
+  AFE-B + VFE-A | variant2      F1=0.4626  n=6
+  AFE-B + VFE-A | variant3      F1=0.4576  n=6
+  AFE-B + VFE-A | variant4      F1=0.4675  n=6
+  AFE-B + VFE-B | variant1      F1=0.4702  n=5
+  AFE-B + VFE-B | variant2      F1=0.4568  n=6
+  AFE-B + VFE-B | variant3      F1=0.4563  n=6
+  AFE-B + VFE-B | variant4      F1=0.4586  n=6
+  AFE-C + VFE-A | variant1      F1=0.3539  n=5
+  AFE-C + VFE-A | variant2      F1=0.3332  n=6
+  AFE-C + VFE-A | variant3      F1=0.3413  n=6
+  AFE-C + VFE-A | variant4      F1=0.3429  n=6

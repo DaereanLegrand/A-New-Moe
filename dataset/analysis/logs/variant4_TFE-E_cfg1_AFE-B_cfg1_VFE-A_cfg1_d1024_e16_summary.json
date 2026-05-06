@@ -1,0 +1,17 @@
+{
+  "run_id": "variant4_TFE-E_cfg1_AFE-B_cfg1_VFE-A_cfg1_d1024_e16",
+  "model": "variant4",
+  "text_cfg": "TFE-E_cfg1",
+  "audio_cfg": "AFE-B_cfg1",
+  "video_cfg": "VFE-A_cfg1",
+  "d_model": 1024,
+  "num_experts": 16,
+  "tfe_dim": 1024,
+  "afe_dim": 1024,
+  "vfe_dim": 2048,
+  "best_epoch": 21,
+  "best_dev_f1": 0.4968,
+  "test_acc": 0.518,
+  "test_f1": 0.5045,
+  "elapsed_sec": 1126.8
+}
