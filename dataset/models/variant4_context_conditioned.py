@@ -174,6 +174,7 @@ class ContextConditionedMoEModel(nn.Module):
         b_dim: int = 336,
         hidden_dim: int = 512,
         num_classes: int = 7,
+        num_experts: int = 16,
     ):
         super().__init__()
         self.proj_t = ModalityProjector(tfe_dim, hidden_dim)
@@ -184,7 +185,7 @@ class ContextConditionedMoEModel(nn.Module):
         self.fusion = GatedMultimodalFusion(hidden_dim)
 
         # Context-conditioned MoE (includes its own Mamba summariser internally)
-        self.moe = ContextConditionedMoE(hidden_dim, num_experts=16, top_k=2)
+        self.moe = ContextConditionedMoE(hidden_dim, num_experts=num_experts, top_k=2)
 
         self.classifier = nn.Sequential(
             nn.LayerNorm(hidden_dim),

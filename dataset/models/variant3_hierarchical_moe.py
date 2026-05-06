@@ -178,6 +178,7 @@ class HierarchicalMoEModel(nn.Module):
         b_dim: int = 336,
         hidden_dim: int = 512,
         num_classes: int = 7,
+        num_experts: int = 16,
     ):
         super().__init__()
         self.proj_t = ModalityProjector(tfe_dim, hidden_dim)
@@ -188,12 +189,12 @@ class HierarchicalMoEModel(nn.Module):
         self.fusion = GatedMultimodalFusion(hidden_dim)
         self.mamba = BiMambaBlock(hidden_dim)
 
-        # 4 super-experts × 4 local experts = 16 leaves total (same capacity
-        # as the flat 16-expert baseline)
+        num_super = max(2, num_experts // 4)
+        num_local = max(2, num_experts // num_super)
         self.moe = HierarchicalMoE(
             d_model=hidden_dim,
-            num_super=4,
-            num_local=4,
+            num_super=num_super,
+            num_local=num_local,
             top_k_super=1,
             top_k_local=2,
         )

@@ -1,20 +1,94 @@
 #!/bin/bash
-for i in {4..10}
-do
-    for j in {4..10}
-    do
-        echo "--- Running: d_model=$((2 ** i)), experts=$j ---"
-        python main.py \
-            --data_dir . \
-            --text TFE-D_cfg2 \
-            --audio AFE-B_cfg2 \
-            --video VFE-A_cfg2 \
-            --d_model $((2 ** i)) \
-            --experts "$j" \
-            --top_k 4 \
-            --empathy_w 0.1 \
-            --moe_w 0.01 \
-            --epochs 30 \
-            --batch_size 1 2>&1
+#
+# runner  --  sweep feature configurations (outer loop) × models (inner loop)
+#
+# Feature configurations that exist across train / dev / test.
+#
+#   Text:   TFE-A(1-5)  TFE-B(1-5)  TFE-C(1-5)  TFE-D(1-5)  TFE-E(1-5)
+#   Audio:  AFE-B(1-5)  AFE-C(1-5)                                  (no AFE-A)
+#   Video:  VFE-A(1-5)  VFE-B(1-4)                                  (no VFE-C)
+#   BFE  :  dummy zeros (336d)
+#
+# Outer loop:  feature-config groups
+# Inner loop:  variant1  variant2  variant3  variant4
+# Innermost:   d_model  ×  num_experts  sweeps
+# ============================================================================
+
+set -euo pipefail
+
+MODELS=(variant1 variant2 variant3 variant4)
+
+# ---- curated feature-config groups ----------------------------------------
+#
+# Each entry:  "text_cfg audio_cfg video_cfg"
+# We keep audio/video mostly fixed and vary text backbone + pooling.
+# A few entries swap audio/video backbones for cross-modality checks.
+#
+CONFIGS=(
+  # ── DeBERTa-v3 (TFE-C) ── different pooling configs ─────────────────
+  "TFE-C_cfg1 AFE-B_cfg1 VFE-A_cfg1"
+  "TFE-C_cfg3 AFE-B_cfg3 VFE-A_cfg3"
+  "TFE-C_cfg4 AFE-B_cfg1 VFE-A_cfg1"
+  "TFE-C_cfg5 AFE-B_cfg1 VFE-A_cfg1"
+
+  # ── RoBERTa-Large (TFE-B) ───────────────────────────────────────────
+  "TFE-B_cfg1 AFE-B_cfg1 VFE-A_cfg1"
+  "TFE-B_cfg3 AFE-B_cfg3 VFE-A_cfg3"
+
+  # ── BERT-Large (TFE-D) ──────────────────────────────────────────────
+  "TFE-D_cfg1 AFE-B_cfg1 VFE-A_cfg1"
+
+  # ── Electra-Large (TFE-E) ───────────────────────────────────────────
+  "TFE-E_cfg1 AFE-B_cfg1 VFE-A_cfg1"
+
+  # ── RoBERTa-Base (TFE-A) ─── mixed dims 768 / 1024 / 2048 ──────────
+  "TFE-A_cfg1 AFE-B_cfg1 VFE-A_cfg1"
+  "TFE-A_cfg3 AFE-B_cfg3 VFE-A_cfg3"
+
+  # ── cross audio ────────────────────────────────────────────────────
+  "TFE-C_cfg1 AFE-C_cfg1 VFE-A_cfg1"
+
+  # ── cross video ────────────────────────────────────────────────────
+  "TFE-C_cfg1 AFE-B_cfg1 VFE-B_cfg1"
+)
+
+# ---- hyper-parameter sweeps -----------------------------------------------
+D_MODELS=(256 512 1024)
+EXPERTS=(8 16)
+
+# ---- main loop ------------------------------------------------------------
+LOG_DIR="logs"
+mkdir -p "$LOG_DIR"
+
+for cfg_entry in "${CONFIGS[@]}"; do
+    read -r TEXT_CFG AUDIO_CFG VIDEO_CFG <<< "$cfg_entry"
+
+    for model in "${MODELS[@]}"; do
+        for d_model in "${D_MODELS[@]}"; do
+            for experts in "${EXPERTS[@]}"; do
+                echo "============================================================"
+                echo "  model      : $model"
+                echo "  text_cfg   : $TEXT_CFG"
+                echo "  audio_cfg  : $AUDIO_CFG"
+                echo "  video_cfg  : $VIDEO_CFG"
+                echo "  d_model    : $d_model"
+                echo "  experts    : $experts"
+                echo "============================================================"
+
+                python train_model.py \
+                    --model      "$model" \
+                    --text_cfg   "$TEXT_CFG" \
+                    --audio_cfg  "$AUDIO_CFG" \
+                    --video_cfg  "$VIDEO_CFG" \
+                    --data_dir   . \
+                    --d_model    "$d_model" \
+                    --num_experts "$experts" \
+                    --epochs     30 \
+                    --batch_size 1 \
+                    --patience   10 \
+                    --log_dir    "$LOG_DIR" \
+                    2>&1 || echo "FAILED: $model $TEXT_CFG $AUDIO_CFG $VIDEO_CFG d=$d_model e=$experts"
+            done
+        done
     done
-done | tee -a runner.log
+done | tee -a "$LOG_DIR/runner.log"

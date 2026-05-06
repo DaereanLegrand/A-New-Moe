@@ -149,9 +149,12 @@ class ModalitySpecialistMoEModel(nn.Module):
         b_dim: int = 336,
         hidden_dim: int = 512,
         num_classes: int = 7,
-        experts_per_modality: int = 4,
+        num_experts: int = 16,
+        experts_per_modality: int = None,
         top_k: int = 2,
     ):
+        if experts_per_modality is None:
+            experts_per_modality = max(1, num_experts // 4)
         super().__init__()
         # Projectors
         self.proj_t = ModalityProjector(tfe_dim, hidden_dim)
